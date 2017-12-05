@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import com.ef.db.DBConnection;
 import com.ef.db.mySql.MySQLConnection;
-import java.util.List;
 import org.junit.Test;
 
 public class ParserTest {
