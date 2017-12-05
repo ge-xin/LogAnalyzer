@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
@@ -69,6 +70,8 @@ public class MySQLConnection implements DBConnection {
       statement.setInt(4, logItem.getStatusCode());
       statement.setString(5, logItem.getUserAgent());
       statement.executeUpdate();
+    } catch (SQLIntegrityConstraintViolationException e){
+      // do nothing here
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -89,6 +92,8 @@ public class MySQLConnection implements DBConnection {
         statement.setString(1, ip);
         statement.setString(2, reason);
         statement.executeUpdate();
+      } catch (SQLIntegrityConstraintViolationException e) {
+        // do nothing here
       } catch (SQLException e) {
         e.printStackTrace();
       }

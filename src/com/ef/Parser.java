@@ -27,7 +27,6 @@ class LogParser {
   private String logPath;
 
   /**
-   *
    * @param logPath set the log file's absolute path
    */
   public LogParser(String logPath) {
@@ -39,6 +38,7 @@ class LogParser {
 
   /**
    * parse the log file and write to database
+   *
    * @throws IOException if the file does not exist
    */
   public void parse() throws IOException {
@@ -192,6 +192,7 @@ class ParameterParser {
 
   /**
    * parse the command line String array into Parameters wrapper class
+   *
    * @param args command line read in by Java
    * @return Parse result in Parameters instance
    */
