@@ -1,10 +1,13 @@
-package com.df.db.mySql;
+package com.ef.db.mySql;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 
+/**
+ * A helper class ERASE ALL THE EXISTING DATA and create a new table.
+ */
 public class MySQLTableCreation {
 
   public static void main(String[] args) throws Exception {

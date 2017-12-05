@@ -1,5 +1,8 @@
-package com.df.db.mySql;
+package com.ef.db.mySql;
 
+/**
+ * This class defines some basic configuration of MySQL connection
+ */
 public class MySQLDBUtil {
 
   private static final String HOSTNAME = "localhost";

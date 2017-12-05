@@ -1,7 +1,10 @@
-package com.df.entity;
+package com.ef.entity;
 
 import java.sql.Timestamp;
 
+/**
+ * the model of a row in log in database
+ */
 public class LogItem {
 
   private Timestamp time;

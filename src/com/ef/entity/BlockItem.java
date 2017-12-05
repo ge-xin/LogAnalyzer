@@ -1,5 +1,8 @@
-package com.df.entity;
+package com.ef.entity;
 
+/**
+ * the model of a row in block ip list in database
+ */
 public class BlockItem {
 
   private String ip;
