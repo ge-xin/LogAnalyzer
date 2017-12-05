@@ -140,7 +140,7 @@ public class MySQLConnection implements DBConnection {
     return shouldBlockIps;
   }
 
-  private static final String SHOULD_VISIT_QUERY = "SELECT `ip` FROM `block` where `ip` =  ?;";
+  private static final String SHOULD_VISIT_QUERY = "SELECT * FROM `block` where `ip` =  ?;";
 
   /**
    * Check if the ip is allowed to visit
