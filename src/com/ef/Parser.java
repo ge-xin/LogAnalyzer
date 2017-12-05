@@ -35,7 +35,7 @@ class LogParser {
   }
 
   private static final String LOG_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-  private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(LOG_TIME_FORMAT);
+  private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(LOG_TIME_FORMAT);
 
   /**
    * parse the log file and write to database
@@ -57,7 +57,7 @@ class LogParser {
         String[] row = line.split("\\|");
         DBConnection conn = MySQLConnection.getInstance();
         LogItem curItem = new LogItemBuilder()
-            .setTimestamp(new Timestamp(simpleDateFormat.parse(row[0]).getTime()))
+            .setTimestamp(new Timestamp(SIMPLE_DATE_FORMAT.parse(row[0]).getTime()))
             .setIp(row[1])
             .setRequest(row[2])
             .setStatusCode(Integer.valueOf(row[3]))
@@ -77,7 +77,7 @@ class LogParser {
  */
 class ParameterParser {
 
-  private static CommandLineParser parser = new DefaultParser();
+  private static final CommandLineParser COMMAND_LINE_PARSER = new DefaultParser();
   private static Options options;
   private static CommandLine cmd;
 
@@ -184,7 +184,7 @@ class ParameterParser {
     }
   }
 
-  private static final String formatStr = "java -cp \"parser.jar\" com.ef.Parser --accesslog=/path/to/file --startDate=2017-01-01.13:00:00 --duration=hourly --threshold=100";
+  private static final String FORMAT_STR = "java -cp \"parser.jar\" com.ef.Parser --accesslog=/path/to/file --startDate=2017-01-01.13:00:00 --duration=hourly --threshold=100";
   private static final String HOURLY = "hourly";
   private static final String DAILY = "daily";
   private static final String HOUR = "HOUR";
@@ -203,7 +203,7 @@ class ParameterParser {
     String duration;
     int threshold;
     try {
-      cmd = parser.parse(options, args);
+      cmd = COMMAND_LINE_PARSER.parse(options, args);
       if (cmd.hasOption("l")) {
         logPath = cmd.getOptionValue("l");
       }
@@ -212,7 +212,7 @@ class ParameterParser {
       threshold = Integer.valueOf(cmd.getOptionValue("t"));
       return Parameters.builder().set(logPath, startDate, duration, threshold).build();
     } catch (org.apache.commons.cli.ParseException | java.text.ParseException e) {
-      System.out.println(formatStr);
+      System.out.println(FORMAT_STR);
       e.printStackTrace();
     }
     return null;
@@ -252,5 +252,8 @@ public class Parser {
       reason = BLOCK_REASON_DAY;
     }
     conn.writeBlockLog(shouldBlockIps, reason);
+    for (String ip : shouldBlockIps) {
+      System.out.println("Blocked: " + ip);
+    }
   }
 }

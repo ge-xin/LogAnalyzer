@@ -53,7 +53,7 @@ public class MySQLConnection implements DBConnection {
     }
   }
 
-  private static final String insertLogItemQuery = "INSERT INTO `log` VALUES (?, ?, ?, ?, ?)";
+  private static final String INSERT_INTO_LOG_VALUES = "INSERT INTO `log` VALUES (?, ?, ?, ?, ?)";
 
   /**
    * write the log item(row) in to database
@@ -62,7 +62,7 @@ public class MySQLConnection implements DBConnection {
   @Override
   public void writeLog(LogItem logItem) {
     try {
-      PreparedStatement statement = conn.prepareStatement(insertLogItemQuery);
+      PreparedStatement statement = conn.prepareStatement(INSERT_INTO_LOG_VALUES);
       statement.setString(1, logItem.getIp());
       statement.setTimestamp(2, logItem.getTimestamp());
       statement.setString(3, logItem.getRequest());
@@ -74,7 +74,7 @@ public class MySQLConnection implements DBConnection {
     }
   }
 
-  private static final String insertBlockItemQuery = "INSERT INTO `block` VALUES (?, ?);";
+  private static final String INSERT_INTO_BLOCK_VALUES = "INSERT INTO `block` VALUES (?, ?);";
 
   /**
    * record the blocked ips
@@ -85,7 +85,7 @@ public class MySQLConnection implements DBConnection {
   public void writeBlockLog(List<String> ips, String reason) {
     for (String ip : ips) {
       try {
-        PreparedStatement statement = conn.prepareStatement(insertBlockItemQuery);
+        PreparedStatement statement = conn.prepareStatement(INSERT_INTO_BLOCK_VALUES);
         statement.setString(1, ip);
         statement.setString(2, reason);
         statement.executeUpdate();
@@ -95,13 +95,13 @@ public class MySQLConnection implements DBConnection {
     }
   }
 
-  private static final String getIpQueryDay = "SELECT `ip`, COUNT(`date`) FROM ("
+  private static final String GET_IP_QUERY_HOUR = "SELECT `ip`, COUNT(`date`) FROM ("
       + " SELECT `ip`, `date` FROM `log`WHERE `date` >= ? and `date` <= DATE_ADD(?, INTERVAL ? HOUR)"
-      + ")visit GROUP BY `ip` HAVING COUNT(`date`) >= ? ORDER BY COUNT(`date`) DESC;";
+      + ")visit GROUP BY `ip` HAVING COUNT(`date`) > ?;";
 
-  private static final String getIpQueryHour = "SELECT `ip`, COUNT(`date`) FROM ("
+  private static final String GET_IP_QUERY_DAY = "SELECT `ip`, COUNT(`date`) FROM ("
       + " SELECT `ip`, `date` FROM `log`WHERE `date` >= ? and `date` <= DATE_ADD(?, INTERVAL ? DAY)"
-      + ")visit GROUP BY `ip` HAVING COUNT(`date`) >= ? ORDER BY COUNT(`date`) DESC;";
+      + ")visit GROUP BY `ip` HAVING COUNT(`date`) > ?;";
 
   /**
    * Get a list of ips should be blocked
@@ -117,9 +117,9 @@ public class MySQLConnection implements DBConnection {
     PreparedStatement statement = null;
     try {
       if (interval.equals("HOUR")) {
-        statement = conn.prepareStatement(getIpQueryHour);
+        statement = conn.prepareStatement(GET_IP_QUERY_HOUR);
       } else {
-        statement = conn.prepareStatement(getIpQueryDay);
+        statement = conn.prepareStatement(GET_IP_QUERY_DAY);
       }
       statement.setTimestamp(1, timestamp);
       statement.setTimestamp(2, timestamp);
@@ -135,7 +135,7 @@ public class MySQLConnection implements DBConnection {
     return shouldBlockIps;
   }
 
-  private static final String shouldVisitQuery = "SELECT `ip` FROM `block` where `ip` =  ?;";
+  private static final String SHOULD_VISIT_QUERY = "SELECT `ip` FROM `block` where `ip` =  ?;";
 
   /**
    * Check if the ip is allowed to visit
@@ -145,7 +145,7 @@ public class MySQLConnection implements DBConnection {
   @Override
   public BlockItem shouldVisit(String ip) {
     try {
-      PreparedStatement statement = conn.prepareStatement(shouldVisitQuery);
+      PreparedStatement statement = conn.prepareStatement(SHOULD_VISIT_QUERY);
       statement.setString(1, ip);
       ResultSet re = statement.executeQuery();
       if (re.next()) {
