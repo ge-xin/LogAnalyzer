@@ -224,8 +224,8 @@ public class Parser {
 
   private static final String HOUR = "HOUR";
   private static final String DAY = "DAY";
-  private static final String BLOCK_REASON_HOUR = "Too many visit in a hour";
-  private static final String BLOCK_REASON_DAY = "Too many visit in a 24 hours";
+  private static final String BLOCK_REASON_HOUR = "Too many visit in a hour: ";
+  private static final String BLOCK_REASON_DAY = "Too many visit in a 24 hours: ";
 
   public static void main(String[] args) {
     // Parameter parsing
@@ -248,9 +248,9 @@ public class Parser {
         .getIp(parameters.getStartDate(), 1, parameters.getDuration(), parameters.getThreshold());
     String reason;
     if (parameters.getDuration().equals(HOUR)) {
-      reason = BLOCK_REASON_HOUR;
+      reason = BLOCK_REASON_HOUR  + parameters.getStartDate();
     } else {
-      reason = BLOCK_REASON_DAY;
+      reason = BLOCK_REASON_DAY + parameters.getStartDate() ;
     }
     conn.writeBlockLog(shouldBlockIps, reason);
     for (String ip : shouldBlockIps) {
